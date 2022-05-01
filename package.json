@@ -5,12 +5,11 @@
   "scripts": {
     "start": "next dev",
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && next export",
     "postbuild": "npm run sitemap && npm run rss",
     "sitemap": "cross-env NODE_OPTIONS='--experimental-json-modules' node ./scripts/generate-sitemap.mjs",
     "rss": "cross-env NODE_OPTIONS='--experimental-json-modules' node ./scripts/generate-rss.mjs",
     "serve": "next start",
-    "export": "next export",
     "analyze": "cross-env ANALYZE=true next build",
     "lint": "next lint --fix --dir pages --dir components --dir lib --dir layouts --dir scripts",
     "prepare": "husky install"
@@ -18,7 +17,7 @@
   "dependencies": {
     "@tailwindcss/forms": "^0.5.0",
     "@tailwindcss/typography": "^0.5.2",
-    "autoprefixer": "^10.4.5",
+    "autoprefixer": "^10.4.6",
     "contentlayer": "latest",
     "esbuild": "^0.14.38",
     "github-slugger": "^1.4.0",

@@ -74,5 +74,6 @@ module.exports = withContentlayer(
 
       return config
     },
+    trailingSlash: true,
   })
 )
