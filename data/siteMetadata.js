@@ -3,7 +3,7 @@ const siteMetadata = {
   author: 'ゆるテックBLOG',
   headerTitle: 'ゆるテックBLOG',
   description:
-    'Webアプリケーション開発に関する情報をゆる〜く発信する為の個人技術ブログです。Vue、React、Java、Go、インフラの記事をメインに発信予定です。',
+    'このブログは、私が仕事や趣味を通して、学んだこと、役に立つと思ったこと、後で見返すための技術メモを書き留めるために作成したものです。ゆる〜く発信を続けて、少しでもどなたかの役に立てれば嬉しいです。',
   language: 'ja-JP',
   theme: 'system',
   siteUrl: 'https://yurutech-blog.com',
@@ -14,9 +14,6 @@ const siteMetadata = {
   email: 'yurutech-blog@googlegroups.com',
   github: 'https://github.com/Yumamama00/Yurutech-Blog',
   locale: 'ja-JP',
-  analytics: {
-    googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID,
-  },
   comment: {
     provider: 'giscus',
     giscusConfig: {

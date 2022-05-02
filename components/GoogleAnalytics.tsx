@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Script from 'next/script'
 
-import siteMetadata from '@/data/siteMetadata'
-
 declare global {
   interface Window {
     gtag?: (...args: any[]) => void
@@ -16,14 +14,14 @@ const GAScript = () => {
     <>
       <Script
         strategy="lazyOnload"
-        src={`https://www.googletagmanager.com/gtag/js?id=${siteMetadata.analytics.googleAnalyticsId}`}
+        src={`https://www.googletagmanager.com/gtag/js?id=G-T9HH8R1KVH`}
       />
       <Script strategy="lazyOnload" id="ga-script">
         {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', '${siteMetadata.analytics.googleAnalyticsId}', {
+            gtag('config', 'G-T9HH8R1KVH', {
               page_path: window.location.pathname,
             });
         `}

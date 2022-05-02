@@ -34,7 +34,10 @@ export default function Tag({ posts, tag }: InferGetStaticPropsType<typeof getSt
   const title = tag[0].toUpperCase() + tag.split(' ').join('-').slice(1)
   return (
     <>
-      <TagSEO title={siteMetadata.title} description={`${tag} tags - ${siteMetadata.title}`} />
+      <TagSEO
+        title={`タグ「${tag}」の検索結果 - ${siteMetadata.title}`}
+        description={`タグ「${tag}」の検索結果 - ${siteMetadata.title}`}
+      />
 
       <ListLayout posts={posts} title={title} />
     </>
