@@ -6,7 +6,7 @@ const siteMetadata = {
     'Webアプリケーション開発に関する情報をゆる〜く発信する為の個人技術ブログです。Vue、React、Java、Go、インフラの記事をメインに発信予定です。',
   language: 'ja-JP',
   theme: 'system',
-  siteUrl: 'https://yurutech-blog.biz',
+  siteUrl: 'https://yurutech-blog.com',
   siteRepo: 'https://github.com/Yumamama00/Yurutech-blog',
   siteLogo: '/static/images/logo.png',
   image: '/static/images/logo.png',
