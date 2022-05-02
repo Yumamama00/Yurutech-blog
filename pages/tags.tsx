@@ -1,8 +1,6 @@
-import Link from '@/components/Link'
 import { PageSEO } from '@/components/SEO'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
-import kebabCase from '@/lib/utils/kebabCase'
 import { getAllTags } from '@/lib/utils/contentlayer'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
 import { allBlogs } from 'contentlayer/generated'
@@ -28,14 +26,11 @@ export default function Tags({ tags }: InferGetStaticPropsType<typeof getStaticP
         <div className="flex max-w-lg flex-wrap pt-4 md:pt-0">
           {sortedTags.map((tag) => {
             return (
-              <div key={tag} className="mt-2 mb-2 mr-5 flex flex-row">
+              <div key={tag} className="mt-2 mb-2 mr-5 flex flex-row items-center">
                 <Tag text={tag} />
-                <Link
-                  href={`/tags/${kebabCase(tag)}`}
-                  className="-ml-1 text-xl font-semibold uppercase text-gray-600 dark:text-gray-300"
-                >
+                <div className="-ml-1 text-lg font-semibold uppercase text-gray-600 dark:text-gray-300">
                   {`(${tags[tag]})`}
-                </Link>
+                </div>
               </div>
             )
           })}

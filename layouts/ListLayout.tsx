@@ -65,11 +65,11 @@ export default function ListLayout({ posts, title, initialDisplayPosts = [], pag
 
                   <div className="space-y-3 xl:col-span-3">
                     <div>
-                      <h3 className="text-2xl font-bold leading-8 tracking-tight">
+                      <div className="text-2xl font-bold leading-8 tracking-tight">
                         <Link href={`/blog/${slug}`} className="text-gray-900 dark:text-gray-100">
                           {title}
                         </Link>
-                      </h3>
+                      </div>
                       <div className="mt-1 flex flex-wrap">
                         {tags.map((tag) => (
                           <Tag key={tag} text={tag} />
@@ -84,7 +84,7 @@ export default function ListLayout({ posts, title, initialDisplayPosts = [], pag
                     <div className="text-base font-medium leading-6">
                       <Link
                         href={`/blog/${slug}`}
-                        className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                        className="text-primary-600 hover:text-primary-600 dark:hover:text-primary-400"
                         aria-label={`Read "${title}"`}
                       >
                         続きを読む &rarr;
