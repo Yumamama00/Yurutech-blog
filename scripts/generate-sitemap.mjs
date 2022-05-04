@@ -1,4 +1,4 @@
-import { writeFileSync } from 'fs'
+import { writeFile, writeFileSync } from 'fs'
 import { globby } from 'globby'
 import prettier from 'prettier'
 import siteMetadata from '../data/siteMetadata.js'
@@ -47,6 +47,7 @@ async function generate() {
   })
 
   writeFileSync('public/sitemap.xml', formatted)
+  writeFileSync('out/sitemap.xml', formatted)
 }
 
 generate()
