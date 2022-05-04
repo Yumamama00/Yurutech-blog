@@ -6,7 +6,7 @@ const siteMetadata = {
     'このブログは、日々学んだこと、役に立つと思ったこと、後で見返すための技術メモや考えを書き留めるために作成したものです。ゆる〜く発信を続けて、少しでも記事を読んでいただいた方のお役に立てれば嬉しいです。',
   language: 'ja-JP',
   theme: 'system',
-  siteUrl: 'https://yurutech-blog.com',
+  siteUrl: 'https://www.yurutech-blog.com',
   siteRepo: 'https://github.com/Yumamama00/Yurutech-blog',
   siteLogo: '/static/images/logo.png',
   image: '/static/images/logo.png',
