@@ -47,7 +47,6 @@ async function generate() {
   })
 
   writeFileSync('public/sitemap.xml', formatted)
-  writeFileSync('out/sitemap.xml', formatted)
 }
 
 generate()

@@ -5,8 +5,8 @@
   "scripts": {
     "start": "next dev",
     "dev": "next dev",
-    "build": "next build && next export",
-    "postbuild": "npm run sitemap && npm run rss",
+    "build": "next build",
+    "postbuild": "npm run sitemap && npm run rss && next export",
     "sitemap": "cross-env NODE_OPTIONS='--experimental-json-modules' node ./scripts/generate-sitemap.mjs",
     "rss": "cross-env NODE_OPTIONS='--experimental-json-modules' node ./scripts/generate-rss.mjs",
     "serve": "next start",

@@ -56,7 +56,6 @@ async function generate() {
   if (allBlogs.length > 0) {
     const rss = generateRss(allBlogs)
     writeFileSync('public/feed.xml', rss)
-    writeFileSync('out/feed.xml', rss)
   }
 
   // RSS for tags
