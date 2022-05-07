@@ -7,7 +7,7 @@ import formatDate from '@/lib/utils/formatDate'
 import Comments from '@/components/comments'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 import { CoreContent } from '@/lib/utils/contentlayer'
-import { ClockIcon } from '@heroicons/react/outline'
+import { ClockIcon, PencilIcon } from '@heroicons/react/outline'
 import { ReactNode } from 'react'
 import type { Blog } from 'contentlayer/generated'
 
@@ -19,7 +19,7 @@ interface Props {
 }
 
 export default function PostLayout({ content, next, prev, children }: Props) {
-  const { slug, date, title } = content
+  const { slug, date, title, lastmod } = content
 
   return (
     <SectionContainer>
@@ -34,15 +34,24 @@ export default function PostLayout({ content, next, prev, children }: Props) {
               <div>
                 <PageTitle>{title}</PageTitle>
               </div>
-              <dl>
-                <div>
+              <div className="flex flex-row justify-center space-x-4">
+                <dl>
                   <dt className="sr-only">Published on</dt>
                   <dd className="flex flex-row items-center justify-center text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
                     <ClockIcon className="mr-1 h-4 w-4" />
                     <time dateTime={date}>{formatDate(date)}</time>
                   </dd>
-                </div>
-              </dl>
+                </dl>
+                {lastmod != null && (
+                  <dl>
+                    <dt className="sr-only">LastUpdated at</dt>
+                    <dd className="flex flex-row items-center justify-center text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
+                      <PencilIcon className="mr-1 h-4 w-4" />
+                      <time dateTime={lastmod}>{formatDate(lastmod)}</time>
+                    </dd>
+                  </dl>
+                )}
+              </div>
             </div>
           </header>
 
