@@ -4,7 +4,7 @@ date: '2022-05-03'
 tags: ['Next.js', 'TailwindCSS']
 lastmod: '2022-05-07'
 draft: false
-summary: 'Next.jsとTailwindCSSを使ってテックブログを作ってみました。このブログは、日々学んだこと、役に立つと思ったこと、後で見返すための技術メモや考えを書き留めるために作成したものです。'
+summary: 'Next.jsとTailwindCSSを使ってマークダウンブログを作ってみました。このブログは、日々学んだこと、役に立つと思ったこと、後で見返すための技術メモや考えを書き留めるために作成したものです。'
 ---
 
 {<TOCInline toc={props.toc} toHeading={1} asDisclosure />}
@@ -13,7 +13,7 @@ summary: 'Next.jsとTailwindCSSを使ってテックブログを作ってみま�
 
 この度、テックブログを開設しました！<br />
 このブログは、日々学んだこと、役に立つと思ったこと、後で見返すための技術メモや考えを書き留めるために作成したものです。<br />
-ゆる〜く発信を続けて、少しでも記事を読んでいただいた方のお役に立てれば嬉しいです。
+ゆる〜く発信を続けて、少しでも記事を読んでいただいた方のお役に立てれば嬉しいです！
 
 # 採用技術
 
@@ -24,9 +24,9 @@ summary: 'Next.jsとTailwindCSSを使ってテックブログを作ってみま�
 - コメント機能：`giscus`
 - CI/CD：`GitHub Actions`
 
-普段フロントエンドは、`Vue.js/Nuxt.js`を使うことが多いので、個人開発では`React/Next.js`に触れてみたいと思い、Next.js を初めて書いてみました。
+普段フロントエンドは、`Vue.js/Nuxt.js`を使うことが多いので、個人開発では`React/Next.js`に触れてみたいと思い、Next.js を初めて使ってみました。Vue3 の CompositionAPI に慣れていたからか、そこまで違和感は感じませんでした。
 
-ブログの作成にあたっては、以下のスターターテンプレートを使用しています。最新の技術要素で構成されており、コメントやメール配信などのブログによくある機能も組み込まれた素晴らしいマークダウンブログテンプレートです。<br />
+ブログの作成にあたっては、以下のスターターテンプレートを使用しました。最新の技術要素で構成されており、コメントやメール配信などのブログによくある機能も組み込まれた素晴らしいマークダウンブログテンプレートです。<br />
 https://github.com/timlrx/tailwind-nextjs-starter-blog
 
 <img
@@ -35,11 +35,11 @@ https://github.com/timlrx/tailwind-nextjs-starter-blog
   alt="og-image"
 />
 
-以下では、各技術要素について簡単に解説していきます。詳細は、別記事で解説していければと思います。
+以下では、各技術要素について簡単に説明していきます。
 
 ## Next.js
 
-[Next.js](https://nextjs.org/) は Vercel 社が開発している [React](https://ja.reactjs.org/) フレームワークです。<br />
+[Next.js](https://nextjs.org/) は Vercel 社が開発している [React](https://ja.reactjs.org/) のフレームワークです。
 
 サーバサイドレンダリング（SSR）や静的サイト生成（SSG）、ファイルベースルーティング、画像最適化などの豊富な機能が提供されています。
 Next.js の概要を掴むにあたっては、[こちらの記事](https://qiita.com/Yuki_Oshima/items/5c0dfd8f7af8fb76af8f)が参考になりました。
@@ -85,13 +85,13 @@ MDX の詳細は、[公式サイト](https://mdxjs.com/)や[こちらの記事](
 ## giscus
 
 [giscus](https://giscus.app/ja)は、`GitHub Discussions` を利用したコメントシステムです。
-giscus を利用することで、サーバを自前で用意する必要がなく、GitHub Discussions でコメントを管理できるので、非常に便利です。
+giscus を利用することで、サーバを自前で用意する必要がなく、GitHub Discussions でコメントを管理できるので、非常に便利です。一方、Public なリポジトリでしか使えないなどの条件がいくつか存在します。
 
 <img src="/static/images/blog/starting-blog/giscus.png" width="600px" />
 
 ## インフラ構成
 
-本ブログは、Next.js で静的サイト生成（SSG）を行っており、生成された静的コンテンツを`Amazon S3`にデプロイし、`CloudFront` + `Amazon S3`という鉄板構成でインフラを構築しています。また、`CloudFront Functions` を用いて、ルート以外のサブパスのページに直接リクエストされた場合に、`index.html`を追加するようにしています。使用した関数は[AWS 公式ドキュメント](https://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/example-function-add-index.html)の通りです。
+本ブログは、Next.js で静的サイト生成（SSG）を行っており、生成された静的コンテンツを`Amazon S3`にデプロイし、`CloudFront` + `Amazon S3`という鉄板構成でインフラを構築しています。また、`CloudFront Functions` を用いて、ルート以外のサブパスのページに直接リクエストされた場合に、`/index.html`を追加するようにしています。使用した関数は[AWS 公式ドキュメント](https://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/example-function-add-index.html)の通りです。
 
 `GitHub Actions` を用いて、main ブランチへのコミットのタイミングで、<br />
 　　**Next.js の SSG ビルド 👉 Amazon S3 へデプロイ 👉 CloudFront のキャッシュクリア** <br />
@@ -101,7 +101,7 @@ giscus を利用することで、サーバを自前で用意する必要がな�
 
 今回は Next.js と TailwindCSS を使ってマークダウンブログを作成した話をまとめました。
 
-再掲になりますが、本ブログは、以下のスターターテンプレートを使用して作成したものです。マークダウンブログの素晴らしいテンプレートですので、興味がある方は是非参考にしてみてください。<br />
+再掲になりますが、本ブログの作成にあたっては、以下のスターターテンプレートを使用しました。Next.js + Tailwind CSS ベースの素晴らしいマークダウンブログテンプレートですので、興味がある方は是非参考にしてみてください。<br />
 https://github.com/timlrx/tailwind-nextjs-starter-blog
 
 最後までお読みいただきありがとうございました。<br/>
