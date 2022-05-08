@@ -1,0 +1,226 @@
+---
+title: 'Vue3 - CompositionAPIの便利ライブラリ 「VueUse」'
+date: '2022-05-08'
+tags: ['Vue.js', 'VueUse', 'CompositionAPI']
+draft: false
+summary: 'Vue.js - CompositionAPIの便利ライブラリである「VueUse」を紹介します。'
+---
+
+{<TOCInline toc={props.toc} toHeading={1} asDisclosure />}
+
+# VueUse とは
+
+[VueUse](https://vueuse.org/) とは、[Anthony Fu](https://github.com/antfu)さんが中心となり開発されている `CompositionAPI （Vue3で実装された関数ベースのAPI）` の 便利な関数（Composable Functions）がコレクションされた OSS ライブラリです。 <br />
+
+`Vue3` で使用可能なほか、`Vue2/Nuxt2`（[@vue/composition-api プラグイン](https://github.com/vuejs/composition-api)を適用することで、Vue2 でも CompositionAPI を使用可能）やリリース間近の `Nuxt3` にも既に対応しています。各プロジェクトにおける VueUse の使用方法は、公式サイトの[Get Started](https://vueuse.org/guide/)を参照してください。
+
+非常に便利な関数が揃っているので、CompositionAPI を採用したプロジェクトで 何らかの Utility 関数・Composable 関数を実装する場合には、まずは VueUse で使えそうな関数がないかを確認しています。
+
+今回の記事では、実際に使っている関数をいくつか紹介します！
+
+# CompositionAPI とは
+
+まずは、`CompositionAPI`について簡単に説明します。CompositionAPI は、Vue3 で実装された関数ベースの API です。詳細は、[公式サイトのドキュメント](https://vuejs.org/guide/extras/composition-api-faq.html#better-type-inference)をご参照ください。
+
+従来の OptionsAPI と比較して、CompositionAPI を適用することで以下のメリットが得られます。
+
+- TypeScript との親和性向上
+- ロジックの再利用性向上
+- コード編成の自由度向上
+
+例えば、以下の OptionsAPI のコードは、
+
+```html
+<template>
+  <div>
+    <span> Count: {{ count }} </span>
+    <span> Double: {{ double }} </span>
+    <button @click="increment">+</button>
+  </div>
+</template>
+
+<script lang="ts">
+  import { defineComponent } from 'vue'
+
+  export default defineComponent({
+    // リアクティブ変数
+    data: () => ({
+      count: 0,
+    }),
+    // 算出プロパティ
+    computed: {
+      double() {
+        return this.count * 2
+      },
+    },
+    // ウォッチャー
+    watch: {
+      count(value) {
+        console.log(value)
+      },
+    },
+    // ライフサイクルフック
+    mounted() {
+      console.log('mounted')
+    },
+    // 状態を変更し、更新をトリガーする関数
+    methods: {
+      increment() {
+        this.count++
+      },
+    },
+  })
+</script>
+```
+
+CompositionAPI では、以下のように書き替えられます。以下の例では、Vue3.2 から使用可能な[script setup 構文](https://vuejs.org/api/sfc-script-setup.html)を使用しています。
+
+```html
+<template>
+  <div>
+    <span> Count: {{ count }} </span>
+    <span> Double: {{ double }} </span>
+    <button @click="increment">+</button>
+  </div>
+</template>
+
+<script setup lang="ts">
+  import { ref, onMounted, watch } from 'vue'
+
+  // リアクティブ変数
+  const count = ref<number>(0)
+
+  // 算出プロパティ
+  const double = computed<number>(() => count.value * 2)
+
+  // 状態を変更し、更新をトリガーする関数
+  const increment = (): void => {
+    count.value++
+  }
+
+  // ウォッチャー
+  watch(count, (value) => {
+    console.log(value)
+  })
+
+  // ライフサイクルフック
+  onMounted(() => {
+    console.log('mounted')
+  })
+</script>
+```
+
+このように、CompositionAPI では、より純粋な JavaScript や TypeScript の変数・関数を用いて、コンポーネントの状態やロジックを記述することが出来るため、TypeScript の型推論が正確に効くようになります。また、OptionsAPI のように各 Option（data, watch, computed）の記述場所が定められていないため、自由にコードを編成することが可能になりました。
+
+更には、状態やロジックをカプセル化して再利用可能なステートフル関数として別ファイル（`.js(ts)`）に切り出すことも可能です。状態やロジックをカプセル化した再利用可能な関数を Vue.js では、`Composable (Functions)`と呼び、その便利なコレクションが今回紹介する`VueUse`です！
+
+# 関数例
+
+実際に使っている関数をいくつか紹介します。今回紹介する以外にも豊富な関数が提供されています。<br/>
+[公式サイト](https://vueuse.org/)にて、すべての関数が、デモや使用例付きで紹介されているので、是非チェックしてみてください。
+
+## useVModel
+
+[useVModel](https://vueuse.org/core/useVModel/)は、props + emit を ref 変数にラップするヘルパー関数です。
+
+useVModel でラップした ref 変数の値を変更した場合、親コンポーネントに変更した値が emit されます。
+
+```ts
+const _modelValue = useVModel(props, 'modelValue', emit)
+
+_modelValue.value // = props.modelValue
+_modelValue.value = 'hoge' // = emit('update:modelValue', 'hoge')
+```
+
+例えば、テキストフィールドをラップしたコンポーネントを作成することを考えた場合、親コンポーネントにイベントを通知する必要があるため、input タグに`v-model`ディレクティブを使用することはできず、以下のように`:value`と`@input`に分けて記述する必要があります。
+
+```html
+<template>
+  <input
+    type="text"
+    :value="modelValue"
+    @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+  />
+</template>
+
+<script setup lang="ts">
+  const props = defineProps<{ modelValue: string }>()
+
+  const emit = defineEmits<{
+    (e: 'update:modelValue', modelValue: string): void
+  }>()
+</script>
+```
+
+上記のコードが、以下のように書き換えられます。子コンポーネント側で v-model を使用することができます。
+
+```html
+<template>
+  <input v-model="_modelValue" type="text" />
+</template>
+
+<script setup lang="ts">
+  import { useVModel } from '@vueuse/core'
+
+  const props = defineProps<{ modelValue: string }>()
+
+  const emit = defineEmits<{
+    (e: 'update:modelValue', modelValue: string): void
+  }>()
+
+  const _modelValue = useVModel(props, 'modelValue', emit)
+</script>
+```
+
+単に子コンポーネント側で `v-model` が使用可能になるというだけでなく、親コンポーネントに変更を通知する際にイベント名を文字列で指定して emit する（ `emit("hoge")` ）必要がなくなるというのもメリットです。イベント名を文字列として扱う必要があると、通常、補完や型が効かず、タイプミスも起きやすいです。<br/>
+useVModel を使用することで、イベント名を文字列で指定する必要がなくなり、ラップした ref 変数の値を変更することで親コンポーネントに型安全に値変更を通知することができます。
+
+複数の props をまとめてラップ可能な、[useVModels](https://vueuse.org/core/useVModels)という関数もあるので、そちらも参照してみてください。
+
+## useLocalStorage
+
+[useLocalStorage](https://vueuse.org/core/uselocalstorage/)を使うことで、LocalStorage に同期されたリアクティブ変数を定義できます。
+
+```js
+const state = useLocalStorage('reactive-local-storage', {
+  count: 0,
+})
+```
+
+類似の関数に、[useSessionStorage](https://vueuse.org/core/useSessionStorage/) があり、こちらは SessionStorage に同期されたリアクティブ変数を定義できます。
+
+筆者は、Vue.js の状態管理ライブラリである[pinia](https://pinia.vuejs.org/)の state で `useLocalStorage` を使用し、LocalStorage に同期されたリアクティブなグローバル変数を定義したりしています。
+
+```ts
+import { useLocalStorage } from '@vueuse/core'
+import { defineStore } from 'pinia'
+
+export const useAuthenticationStore = defineStore('authStore', {
+  state: () => ({
+    isLoggedIn: useLocalStorage('isLoggedIn', false),
+  }),
+  actions: {
+    setLoggedIn(isLoggedIn: boolean) {
+      this.isLoggedIn = isLoggedIn
+    },
+  },
+})
+```
+
+## usePreferredDark
+
+[usePreferredDark](https://vueuse.org/core/usePreferredDark/)は、ユーザが OS 設定でダークモードを選択しているかを真偽値で表すリアクティブ変数を返却します。<br/>
+OS 設定に応じて、アプリケーションのダークモード設定の初期値を決定する場合などに使用しています。
+
+```ts
+import { usePreferredDark } from '@vueuse/core'
+
+const isDark = usePreferredDark()
+```
+
+# まとめ
+
+今回の記事では、CompositionAPI の便利な Composable 関数がコレクションされた OSS ライブラリである、`VueUse`を紹介しました。<br/>
+今回紹介しきれなかった関数がまだまだ沢山ありますので、気になった方は是非[公式サイト](https://vueuse.org/)をチェックしてみてください！
+
+最後までお読みいただきありがとうございました！
