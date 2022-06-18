@@ -18,8 +18,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn install
-      - run: yarn build
+      - run: npm install
+      - run: npm run build
         env:
           NEXT_PUBLIC_GISCUS_REPO: Yumamama00/Yurutech-blog
           NEXT_PUBLIC_GISCUS_REPOSITORY_ID: R_kgDOHQOpNw
