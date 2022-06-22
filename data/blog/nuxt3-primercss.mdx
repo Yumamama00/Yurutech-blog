@@ -1,0 +1,118 @@
+---
+title: 'GitHubを支えるCSSフレームワーク「Primer CSS」をNuxt3で試す'
+date: '2022-06-22'
+tags: ['Nuxt3', 'Primer CSS', 'CSSフレームワーク']
+draft: false
+summary: 'Nuxt3のプロジェクトで、GitHubを支えるCSSフレームワーク「Primer CSS」を試してみました。スターターテンプレートも公開しています。'
+---
+
+{<TOCInline toc={props.toc} toHeading={1} asDisclosure />}
+
+<link href="https://unpkg.com/@primer/css@^19.0.0/dist/primer.css" rel="stylesheet" />
+
+# Primer CSS とは
+
+[Primer CSS](https://primer.style/css/)とは、GitHub のデザインシステムを支える CSS フレームワークです。<br />
+Primer CSS を利用することで、GitHub と同様なデザインのコンポーネントを簡単に作成することが出来ます。<br/>
+以下は、実際に Primer CSS のボタンコンポーネントを利用したボタンです。GitHub のボタンそのまんまですね。
+
+<button className="btn btn-primary" type="button">
+  <svg
+    className="octicon"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 16 16"
+    width="16"
+    height="16"
+  >
+    <path
+      fillRule="evenodd"
+      d="M7.47 10.78a.75.75 0 001.06 0l3.75-3.75a.75.75 0 00-1.06-1.06L8.75 8.44V1.75a.75.75 0 00-1.5 0v6.69L4.78 5.97a.75.75 0 00-1.06 1.06l3.75 3.75zM3.75 13a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5z"
+    ></path>
+  </svg>
+  <span>Clone</span>
+  <span className="dropdown-caret"></span>
+</button>
+
+<button className="btn btn-danger" type="button">
+  <svg
+    className="octicon"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 16 16"
+    width="16"
+    height="16"
+  >
+    <path
+      fillRule="evenodd"
+      d="M6.5 1.75a.25.25 0 01.25-.25h2.5a.25.25 0 01.25.25V3h-3V1.75zm4.5 0V3h2.25a.75.75 0 010 1.5H2.75a.75.75 0 010-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75zM4.496 6.675a.75.75 0 10-1.492.15l.66 6.6A1.75 1.75 0 005.405 15h5.19c.9 0 1.652-.681 1.741-1.576l.66-6.6a.75.75 0 00-1.492-.149l-.66 6.6a.25.25 0 01-.249.225h-5.19a.25.25 0 01-.249-.225l-.66-6.6z"
+    ></path>
+  </svg>
+  <span>Delete</span>
+</button>
+
+ボタン以外にも、アラートやフォーム、ナビゲーション、パンくずリスト、ダイアログ等、Web アプリケーションで実装する機会の多いコンポーネントが豊富に用意されています。
+
+※ Primer CSS では、JavaScript は提供されていません。一部の処理は独自で実装する必要があります。<br />
+※ ただし、[React のコンポーネント](https://primer.style/react/)は提供されているようです（Vue 版も欲しい、、）。
+
+# Nuxt3 で試す
+
+前記の通り、React のコンポーネントは提供されていますが、Vue.js の実装は提供されていない為、CSS のみを利用する形になります。
+
+導入自体は至ってシンプルです。
+
+1. Primer CSS をインストール
+
+```shell
+npm install @primer/css --save
+yarn add @primer/css
+```
+
+2. assets ディレクトリに primer.scss を作成
+
+```scss
+@import '@primer/css/index.scss';
+```
+
+3. nuxt.config.js/ts に以下を追記
+
+```conf
+css: ['@/assets/primer.scss']
+```
+
+4. 実際に CSS が適用されているか試す
+
+```html
+<button class="btn btn-primary mr-2" type="button">Primary</button>
+```
+
+# Nuxt3 + Primer CSS のスターターテンプレート紹介
+
+今後の個人開発では、Nuxt3 + PrimerCSS を利用していこうと思うので、スターターテンプレートを作成してみました。<br/>
+以下で公開していますので、気になった方は是非ご参照ください。
+
+https://github.com/Yumamama00/nuxt3-primercss-starter
+
+<img
+  width="600"
+  alt="image"
+  src="https://user-images.githubusercontent.com/68138518/174828226-d8dc3d91-ba13-4ced-af1c-be918f2b66d1.png"
+/>
+
+<img
+  width="232"
+  alt="image"
+  src="https://user-images.githubusercontent.com/68138518/174828139-60d8cbb5-6925-4e14-8af2-918232ba924d.png"
+/>
+
+スターターテンプレートでは、以下の機能も含んでいます！
+
+## Also Includes
+
+- [TypeScript](https://www.typescriptlang.org/) (JavaScript with syntax for types)
+- [unplugin-icons](https://github.com/antfu/unplugin-icons) (Icon pack)
+- [Pinia](https://pinia.vuejs.org/) (Awesome Vue Store)
+- [VueUse](https://vueuse.org/) (Collection of essential Vue Composition Utilities)
+- [eslint](https://eslint.org/) (Linting)
+- [prettier](https://prettier.io/) (Formatter)
+- [husky](https://typicode.github.io/husky/#/) (Git hooks)
+- [Vitest](https://vitest.dev/) (Vite-native unit test framework)
