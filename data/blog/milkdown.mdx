@@ -1,0 +1,242 @@
+---
+title: 'WYSIWYGマークダウンエディタ「Milkdown」をVue3で試す'
+date: '2022-07-02'
+tags: ['Milkdown', 'Vue.js', 'Vue3', 'WYSIWYG']
+draft: false
+summary: 'Vue.jsやReactなど様々なフレームワークに対応したプラガブルなWYSIWYGマークダウンエディタ「Milkdown」を試してみました。動作確認に利用したコードはGitHubに公開しています。'
+---
+
+{<TOCInline toc={props.toc} toHeading={1} asDisclosure />}
+
+# はじめに
+
+今回は、Vue.js や React など様々なフレームワークに対応したプラガブルな WYSIWYG マークダウンエディタ「Milkdown」を Vue3 のプロジェクトで試してみたので、紹介と軽いハンズオンをしたいと思います。
+
+# WYSIWYG エディタとは
+
+まずは、WYSIWYG エディタについて簡単に説明します。
+
+WYSIWYG（ウィジウィグ）とは、 **W**hat **Y**ou **S**ee **I**s **W**hat **Y**ou **G**et の略です。<br />
+日本語で直訳すると、「見た通りに得られる」という意味ですね。
+
+WYSIWYG エディタとは、編集画面で表示された通りのものが実際に出力されるエディタのことです。<br />
+例えば、`Slack` や `Microsoft Teams` でメッセージを入力する際のエディタが該当します。メッセージエディタで表示された通りに、送信したメッセージが表示されますよね。
+
+# 「Milkdown」の紹介
+
+[Milkdown](https://milkdown.dev/)とは、オープンソースの TypeScript 製 WYSIWYG マークダウンエディタです。<br />
+Vue.js や React、SolidJS など様々なフレームワーク向けの実装が公式から提供されています。
+
+<img src="/static/images/blog/milkdown/milkdown.png" alt="milkdown" height="400px" width="700px" />
+
+## 3 つの特徴
+
+### 1. 美しいデザイン
+
+いきなり主観的な部分で恐縮ですが、Milkdown を使ってみてまずはその美しいデザインに惹かれました。<br />
+これまでいくつか WYSIWYG エディタを使ってきましたが、圧倒的にモダンで好みなデザインです。
+
+また、Milkdown は、ダークモードにも対応しています。デフォルトでは、システムのダークモード設定から自動的にモードを判断するようになっているようです。
+
+公式サイトで[オンラインデモ](https://milkdown.dev/online-demo)が用意されているので、まずはこちらで是非試してみてください！
+
+### 2. プラグイン駆動/高いカスタマイズ性
+
+Milkdown では、すべての機能がプラグインとして扱われます。<br />
+利用者は必要な機能のみを選択して利用することが可能です。
+
+また、すべての機能がプラグインなので、カスタマイズ性が非常に高いです（プラグインを自作することも可能ですし、公式で提供されるプラグイン自体も設定や上書き可能になっているものが多く、カスタマイズ性が高いです）。<br />
+例えば、エディタのテーマ自体もプラグインとして扱われている為、柔軟にテーマをカスタマイズすることが可能です。
+
+自分でプラグインを実装することも可能ですが、公式から[豊富なプラグイン](https://milkdown.dev/using-plugins)が提供されています。
+
+例えば、以下のようなプラグインがあります。
+
+- `@milkdown/plugin-menu` - エディタ上部にメニューバーを表示するプラグイン
+- `@milkdown/plugin-history` - UNDO/REDO の操作をサポートするプラグイン
+- `@milkdown/plugin-clipboard` - コピー/ペーストの操作をサポートするプラグイン
+- `@milkdown/plugin-prism` - Prismjs を利用してコードをハイライトするプラグイン
+- `@milkdown/plugin-emoji` - 絵文字をサポートするプラグイン
+
+### 3. TypeScript 対応
+
+Milkdown は TypeScript 製です。<br />
+最近はもっぱら TypeScript が主流なので、公式が TypeScript の型を提供してくれるのは有り難いですね。
+
+# 実際に試す
+
+今回は、Vue3（3.2.x） のプロジェクトで実際に Milkdown を試してみました。
+
+## 1. Vue3 のプロジェクトを作成する
+
+以下のコマンドで、Vue3 のプロジェクトを作成します。
+
+```bash
+npm init vue@latest
+```
+
+オプション機能の要否が対話形式で聞かれるので、必要なものを選択してください。<br />
+今回のサンプルでは、ミニマルに以下のように選択しました。
+
+```bash
+✔ Project name: … vue3-milkdown-sample
+✔ Add TypeScript? … Yes
+✔ Add JSX Support? … No
+✔ Add Vue Router for Single Page Application development? … No
+✔ Add Pinia for state management? … No
+✔ Add Vitest for Unit testing? … No
+✔ Add Cypress for both Unit and End-to-End testing? … No
+✔ Add ESLint for code quality? … Yes
+✔ Add Prettier for code formatting? … Yes
+```
+
+src 配下の、`/assets`ディレクトリや `/components` ディレクトリにデフォルトの assets やコンポーネントが存在していますが、必要でなければ削除してください。
+
+### 2. Milkdown インストール
+
+以下のコマンドで Milkdown をインストールします。
+
+```bash
+# install with npm
+npm install @milkdown/core @milkdown/vue @milkdown/preset-commonmark @milkdown/prose @milkdown/theme-nord @milkdown/plugin-listener
+```
+
+また、必要なプラグイン（`@milkdown/plugin-xxxx`）をインストールしてください。<br />
+今回のサンプルでは、プラグイン盛り沢山にしています。
+
+```bash
+# install with npm
+npm install @milkdown/plugin-clipboard @milkdown/plugin-cursor @milkdown/plugin-emoji @milkdown/plugin-history @milkdown/plugin-indent @milkdown/plugin-menu @milkdown/plugin-prism @milkdown/plugin-slash @milkdown/plugin-tooltip @milkdown/plugin-trailing @milkdown/plugin-upload
+```
+
+公式で提供されるテーマでは、Material アイコンと Roboto フォントが使用されていますが、ライブラリには含まれていないため、自前でインポートする必要があります。<br />
+また、今回のサンプルでは、コードのシンタックスハイライトに `@milkdown/plugin-prism` を使用しているため、 [Prism.js](https://prismjs.com/) のインストールも必要です。
+
+```bash
+# install with npm
+npm install @material-design-icons/font
+npm install prismjs
+```
+
+### 3. Milkdown 用のコンポーネントを作成する
+
+Milkdown 用のコンポーネントを作成します。サンプルでは、 `MilkdownEditor.vue` というファイル名にしています。
+
+```html
+<template>
+  <VueEditor :editor="editor" />
+</template>
+
+<script setup lang="ts">
+  // core
+  import { VueEditor, useEditor } from '@milkdown/vue'
+  import { Editor, rootCtx, defaultValueCtx } from '@milkdown/core'
+  import { nord } from '@milkdown/theme-nord'
+  import { commonmark } from '@milkdown/preset-commonmark'
+
+  // plugin
+  import { emoji } from '@milkdown/plugin-emoji'
+  import { menu } from '@milkdown/plugin-menu'
+  import { slash } from '@milkdown/plugin-slash'
+  import { history } from '@milkdown/plugin-history'
+  import { prism } from '@milkdown/plugin-prism'
+  import { tooltip } from '@milkdown/plugin-tooltip'
+  import { indent } from '@milkdown/plugin-indent'
+  import { trailing } from '@milkdown/plugin-trailing'
+  import { upload } from '@milkdown/plugin-upload'
+  import { cursor } from '@milkdown/plugin-cursor'
+  import { clipboard } from '@milkdown/plugin-clipboard'
+  import { listener, listenerCtx } from '@milkdown/plugin-listener'
+
+  import 'prismjs/themes/prism.css'
+
+  const props = defineProps<{
+    modelValue: string
+  }>()
+
+  const emit = defineEmits<{
+    (e: 'update:modelValue', value: string): void
+  }>()
+
+  const { editor } = useEditor((root) =>
+    Editor.make()
+      .config((ctx) => {
+        ctx.set(rootCtx, root)
+        ctx.set(defaultValueCtx, props.modelValue)
+        ctx.get(listenerCtx).markdownUpdated((ctx, markdown) => {
+          emit('update:modelValue', markdown)
+        })
+      })
+      .use(nord)
+      .use(emoji)
+      .use(slash)
+      .use(commonmark)
+      .use(menu)
+      .use(history)
+      .use(prism)
+      .use(tooltip)
+      .use(indent)
+      .use(trailing)
+      .use(upload)
+      .use(cursor)
+      .use(clipboard)
+      .use(listener)
+  )
+</script>
+```
+
+### 4. Material アイコンと Roboto フォントを Import する
+
+`src/assets` ディレクトリに `mdi.css` と `font.css` を以下の通り作成してください。
+
+■ mdi.css
+
+```css
+@import '@material-design-icons/font/outlined.css';
+```
+
+■ font.css
+
+```css
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+```
+
+### 5. App.vue で Milkdown 用のコンポーネントを使用する
+
+`src/App.vue` を以下の通りに変更してください。
+
+```html
+<template>
+  <main>
+    <div style="margin-right: auto; margin-left: auto; width: 80%">
+      <h1>Vue3 + Milkdown Sample</h1>
+
+      <MilkdownEditor v-model="content" />
+    </div>
+  </main>
+</template>
+
+<script setup lang="ts">
+  import { ref } from 'vue'
+  import MilkdownEditor from './components/MilkdownEditor.vue'
+
+  const content = ref<string>('Vue3 + Milkdown')
+</script>
+
+<style>
+  @import '@/assets/font.css';
+  @import '@/assets/mdi.css';
+</style>
+```
+
+### 6. Vue3 の開発サーバ起動
+
+`npm run dev` を実行して、開発サーバを起動してください。
+
+# 最後に
+
+本記事では、 WYSIWYG マークダウンエディタ「Milkdown」の紹介と軽いハンズオンを行いました。 <br />
+気になった方は是非お試しください！
+
+今回使用したソースコードは GitHub で公開しています。<br />
+[https://github.com/Yumamama00/vue3-milkdown-sample](https://github.com/Yumamama00/vue3-milkdown-sample)
